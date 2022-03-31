@@ -79,10 +79,11 @@ fetch("http://localhost:3000/api/products/"+productId) // stock l'url + id de l'
             // Déclaration de la fonction popuConfirmation pour lien vers la page panier
 
             const popupConfirmation = () => {
-                if(window.confirm(`votre commande de ${selectQuantity} ${oneArticle.name} en couleur ${selectColor} est ajouté au panier. Appuyer sur OK pour voir votre panier`)){             
-                window.location.href = "cart.html";
+                if(window.confirm(`votre commande de ${selectQuantity} ${oneArticle.name} en couleur ${selectColor} est ajouté au panier. Appuyer sur OK pour consulter votre panier`)){             
+                    window.location.href ="cart.html";
                 } else {
-                    location.reload(); // recharge la page (perte de la selection)
+                    window.location.reload(); // recharge la page (perte de la selection)
+                    
                 }
             }
 
@@ -111,31 +112,6 @@ fetch("http://localhost:3000/api/products/"+productId) // stock l'url + id de l'
 })
 
 
-
-
-
-
-// function addToCart() {
-    
-//     let selectColor = productColor.value;
-//     let productQuantity = docuement.querySelector("#quantity");
-//     let selectQuantity = productQuantity.value ;
-//     console.log(selectColor)
-
-//     localStorage.setItem("selectorColor", "select")
-
-// }
-
-// function addition() { // déclare la fonction
-//     console.log ("hello world");
-// }
-
-// addition(); // on appelle la fonction
-
-
-
-
-// clickAddtoCart.addEventListener('click', onclick); // écouter un element en cliquant
 
 
  
