@@ -40,8 +40,11 @@
         </div>`;
         sectionItems.appendChild(productArticle);
 
-        updateCart(product)
 
+        changeQuantity()
+        updateCart(product)
+        
+        
 
   
                   
@@ -69,7 +72,7 @@
  let order = document.getElementById("order");
 
      order.addEventListener("click",(Event)=> {
-         if(!firstName.value) { // si firstName est null
+         if(!firstName.value) { // si il y a rien d'écrit dans le input
              firstNameErrorMsg.innerHTML = "Veuillez renseigner le prénom" ;// alors afficher texte
          }if(!lastName.value) {
               lastNameErrorMsg.innerHTML = "Veuillez renseigner votre nom de famille" ;
@@ -77,49 +80,58 @@
              addressErrorMsg.innerHTML = "Veuillez renseigner votre adresse postale" ;
          }if(!city.value) {
              cityErrorMsg.innerHTML = "Veuillez renseigner votre ville" ;
-         }if(!email.value) {              
+         }if(!email.value) {          
              emailErrorMsg.innerHTML = "veuillez renseigner votre adresse mail" ;
          }else {                    
-             let contact = {
-                 firstName: firstName.value,
-                 lastName: lastName.value,
-                 address: address.value,
-                 city: city.value,
-                 email: email.value,
-                 }
+             // toutes les conditions ci-dessus sont validées alors methode creation d'un numero de commande (orderId)s
 
-                 console.log(productBuy);
-
-                 alert("Hello world - fetch start here");
-
-                 fetch("http://localhost:3000/api/order", { // URL/order (voir documentation parametres des API)
+                 fetch("http://localhost:3000/api/products/order/", { // URL/order (voir documentation parametres des API)
                      method: "POST",
-                     body: JSON.stringify({ contact, productBuy }),  // Objet JSON => STRING
                      headers: {
-                        "Access-Control-Allow-Origin": "*",
+                        'Accept': 'application/json',
                         "Content-Type": "application/json",
                      },
+                     // Objet JSON => STRING
+                     body: JSON.stringify({
+                        contact:{
+                            firstName: firstName.value,
+                            lastName: lastName.value,
+                            address: address.value,
+                            city: city.value,
+                            email: email.value
+                            }, 
+                            products:productBuy 
+                        })  
                     })
-                 .then((response) => { // identifie la réponse du serveur API
-                     console.log(response) 
-                     return response.json() // retourne la reponse qui est en format JSON
-                   })
+                    // identifie la réponse du serveur API
+                    .then((response) => {
+                        // mettre la reponse en 200 - accepter/true
+                        if(response.ok){ ;
+                           return response.json()
+                        }
+                        else{
+                            console.log(response);
+                           alert("Une Erreur c'est produite lors de la creation...");
+                        }     
+                    })
 
-                 .then(responseAPI => { // Que faire avec cette réponse ? orderID
-                 console.log(responseAPI.orderId);
-                 // localStorage.clear;                  
-                 localStorage.setItem("order", JSON.stringify(contact)); // Objet JSON => STRING
-                 document.location.href = `confirmation.html?orderId=${responseAPI.orderId}`;
-                 })
-
-                 .catch((error) => {
-                     alert (error.message);
-                 });
+                  .then(responseAPI => { // Que faire avec cette réponse ? orderID
+                    console.log("respondeAPI : "+responseAPI.orderId);
+                    localStorage.clear();                  
+                   location.href = `../html/confirmation.html?orderId=${responseAPI.orderId}`;
+                
+                    })
+                    .catch((error) => {
+                        alert (error.message);
+                    });
                  
                }        
          }) ; 
 
+         
 deleteProduct()
+
+
 
 
     
@@ -146,6 +158,29 @@ deleteProduct()
     let totalArticlesPrice = document.querySelector("#totalPrice");
     totalArticlesPrice.innerHTML = totalPrice;
 }
+
+//Met à jour le panier quand on modifie la quantité
+function changeQuantity() {
+    // je cible la class de l'input
+    let itemQuantity = document.querySelector(".itemQuantity");
+    // je parcours toutes les champs "Quantity" de chaque produit
+    for (let q = 0; q < itemQuantity.length; q++) {
+        let changeQuantity = itemQuantity[q] ;
+    // lorsque je change la value de l'input - la MAJ se fait automatiquement
+        changeQuantity.addEventListener('change', (event) => {
+            itemQuantity.innerHTML += `<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" 
+            value="${event.target.value}">`;
+        // quantité du produit devient le nouveau chiffre présent dans l'input
+        productLocalStorage[q].productQuantity = Number(changeQuantity.value);
+        //  converti OBJET => JSON
+        localStorage.setItem("product", JSON.stringify(productLocalStorage));
+        // MAJ avec la fonction UpdateCart
+        updateCart(product)
+        })
+        
+    }} ;
+
+
 
 // CLEAR PANIER
    function clearCart(product){
@@ -180,6 +215,12 @@ deleteProduct()
     })
     }
 }
+// validate e-mail
+function validateEmail(email){
+    let regex = /^[A-Za-z0-9_-]+@\w+\.[a-z]+$/;
+    console.log(regex.test(email));
+    return regex.test(email);
+  }
 
 
 
