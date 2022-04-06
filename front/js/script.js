@@ -2,7 +2,7 @@
 // récupérer les données de l'API
 
 fetch("http://localhost:3000/api/products")
-.then(response => response.json()) // converti la réponse en JS
+.then(response => response.json()) // converti la réponse en objet => JSON
 .catch((error) => { // Message d'erreur
     let articlesContainer = document.querySelector(".items");
     articlesContainer.innerHTML = "Nous n'avons pas réussi à afficher les produits";
@@ -11,11 +11,11 @@ fetch("http://localhost:3000/api/products")
 
 })
 
-.then(function(resultatAPI){ // utiliser les données de l'API en format JS
+.then(function(resultatAPI){ // utiliser les données de l'API
     let articles = resultatAPI; // variable regroupant tous les données des articles
     console.log(articles); // resultats retournés dans la console (array)
     for(let article in articles) { // boucle pour retouner tous les différents element/items dispoible sur l'API
-        let articleLink = document.createElement("a"); // création d'un element et lastocker dans une variable
+        let articleLink = document.createElement("a"); // création d'un element et la stocker dans une variable
         document.querySelector(".items").appendChild(articleLink); // Positionner le nouvel element dans le code
         articleLink.href = `product.html?id=${resultatAPI[article]._id}`; // personnaliser l'élément
         

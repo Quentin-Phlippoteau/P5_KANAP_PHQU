@@ -36,7 +36,7 @@ fetch("http://localhost:3000/api/products/"+productId) // stock l'url + id de l'
         document.querySelector("#colors").appendChild(productColor); // ajout de l'element option
         productColor.value = color; // ajout de lattribut value avec la réponse colors (index)
         productColor.innerHTML = color; // retourne la valeur de la proprité colors
-        console.table(oneArticle.colors) // tableau des choix des couleurs (afficher dans la console)       
+        // console.table(oneArticle.colors) // tableau des choix des couleurs (afficher dans la console)       
      }
 
      // Gestion du pannier
@@ -67,54 +67,51 @@ fetch("http://localhost:3000/api/products/"+productId) // stock l'url + id de l'
                 productImg : oneArticle.imageUrl,
                 productImg_alt : oneArticle.altTxt
             };
-            console.log(articleInCart);
+            console.table(articleInCart);
 
+        
+//************************ localStorage **********************************************
             
-
-            // localStorage
-            
-            // Déclaration de la variable dans laquelle on met la key et les values dans le local Strorage
-            let productLocalStorage = JSON.parse(localStorage.getItem("product"));
-
-            // Déclaration de la fonction popuConfirmation pour lien vers la page panier
-
+// Déclaration de la variable dans laquelle on met la key et les values dans le local Strorage
+let productLocalStorage = JSON.parse(localStorage.getItem("product"));
+// selectionner les parametres id et color
+const productFind = productLocalStorage.find((element) => element.productId === articleInCart.productId) && ((element) => element.productColor === articleInCart.productColor) ;
+// Déclaration de la fonction popuConfirmation pour lien vers la page panier
             const popupConfirmation = () => {
-                if(window.confirm(`votre commande de ${selectQuantity} ${oneArticle.name} en couleur ${selectColor} est ajouté au panier. Appuyer sur OK pour consulter votre panier`)){             
-                    window.location.href ="cart.html";
+                if (window.confirm(`votre commande de ${selectQuantity} ${oneArticle.name} en couleur ${selectColor} est ajouté au panier. Appuyer sur OK pour consulter votre panier ou Annuler pour revenir à la page d'accueil`)) {
+                    window.location.href = "cart.html";
                 } else {
-                    window.location.reload(); // recharge la page (perte de la selection)
-                    
+                    window.location.href = "index.html";
                 }
             }
-
-            if(productLocalStorage) { // si le panier n'est pas vide
+            
+            
+            
+            if (productLocalStorage) { // Si le panier contient déjà au moins un produit
                 productLocalStorage.push(articleInCart);
                 localStorage.setItem("product", JSON.stringify(productLocalStorage));
-                popupConfirmation()
+                console.table(productLocalStorage);
+                popupConfirmation();
                 
-            } else { // si le panier est vide
+            }else if(productFind)  { // Si le panier contient déjà le produit
+
+            localStorage.setItem("product", JSON.stringify(productLocalStorage));
+            alert("productFind")
+            popupConfirmation();
+                
+                
+
+
+            }else { // si le panier est vide
                 productLocalStorage = [];
                 productLocalStorage.push(articleInCart);
                 localStorage.setItem("product", JSON.stringify(productLocalStorage));
                 popupConfirmation()
             }
-
-
-
-
         }
-        
-
 
 
     });
 
-})
 
-
-
-
- 
-
-
-
+});
