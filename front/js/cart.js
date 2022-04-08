@@ -61,76 +61,107 @@
    let email = document.querySelector("#email");
    let emailErrorMsg = document.querySelector("#emailErrorMsg");
 
-// ****************************************************
-
-
-
-
-// ***************************************************
-
-
-
-
 
  // METHODE POST // onglet network(reseau)
 
  let order = document.getElementById("order");
- let regex = /^[A-Za-z0-9_-]+@\w+\.[a-z]+$/;  
+ const regexName = /^(?=.{1,50}$)[a-z\u00C0-\u00FF]+(?:['-_.\s][a-z\u00C0-\u00FF]+)*$/i;
+ const regexLocation = /^[a-zA-Z0-9\u00C0-\u00FF\s,. '-]{3,}$/;
+ const regexEmail = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
+
+ // confirmer la validation de chaque champs du formulaire 
+firstName.addEventListener("change",(Event) => {
+    if (regexName.test(firstName.value) == true) {
+        firstNameErrorMsg.innerHTML = " " ;
+    } else {
+        firstNameErrorMsg.innerHTML = "Veuillez renseigner le prénom" ;
+    }    
+});
+
+lastName.addEventListener("change",(Event) => {
+    if (regexName.test(lastName.value) == true) {
+        lastNameErrorMsg.innerHTML = " " ;
+    } else {
+        lastNameErrorMsg.innerHTML = "Veuillez renseigner le nom de famille" ;
+    }    
+});
+
+city.addEventListener("change",(Event) => {
+    if (regexLocation.test(city.value) == true) {
+        cityErrorMsg.innerHTML = " " ;
+    } else {
+        cityErrorMsg.innerHTML = "Veuillez renseigner votre ville" ;
+    }    
+});
+
+address.addEventListener("change",(Event) => {
+    if (regexLocation.test(address.value) == true) {
+        addressErrorMsg.innerHTML = " " ;
+    } else {
+        addressErrorMsg.innerHTML = "Veuillez renseigner votre adresse postale" ;
+    }    
+});
+
+email.addEventListener("change",(Event) => {
+    if (regexEmail.test(email.value) == true) {
+        emailErrorMsg.innerHTML = " " ;
+    } else {
+        emailErrorMsg.innerHTML = "Veuillez renseigner votre adresse email" ;
+    }    
+});
+
+ // valider tous les champs du formulaire  + methode post
 
      order.addEventListener("click",(Event)=> {
-         if(!firstName.value) { // si il y a rien d'écrit dans le input
-             firstNameErrorMsg.innerHTML = "Veuillez renseigner le prénom" ;// alors afficher texte
-         }if(!lastName.value) {
-              lastNameErrorMsg.innerHTML = "Veuillez renseigner votre nom de famille" ;
-         }if(!address.value) {
-             addressErrorMsg.innerHTML = "Veuillez renseigner votre adresse postale" ;
-         }if(!city.value) {
-             cityErrorMsg.innerHTML = "Veuillez renseigner votre ville" ;      
-         }if(!email.value) {
-            emailErrorMsg.innerHTML = "votre adresse est invalide" ;
-            alert("REGEX")            
-            
-         }else {                    
-             // toutes les conditions ci-dessus sont validées
-                 fetch("http://localhost:3000/api/products/order/", { // URL/order (voir documentation parametres des API)
-                     method: "POST",
-                     headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json",
-                     },
-                     // Objet JSON => STRING
-                     body: JSON.stringify({
-                        contact:{
-                            firstName: firstName.value,
-                            lastName: lastName.value,
-                            address: address.value,
-                            city: city.value,
-                            email: email.value
-                            }, 
-                            products:productBuy 
-                        })  
-                    })
-                    // identifie la réponse du serveur API
-                    .then((response) => {
-                        // mettre la reponse en 200 - accepter/true
-                        if(response.ok){ ;
-                           return response.json()
-                        }
-                        else{
-                            console.log(response);
-                           alert("Une Erreur c'est produite lors de la creation...");
-                        }     
-                    })
+        if (    
+            (regexName.test(firstName.value) == true) &
+            (regexName.test(lastName.value) == true) &
+            (regexLocation.test(city.value) == true) &
+            (regexLocation.test(address.value) == true)&
+            (regexEmail.test(email.value) == true)
+          ) { 
+            fetch("http://localhost:3000/api/products/order/", { // URL/order (voir documentation parametres des API)
+                method: "POST",
+                headers: {
+                   'Accept': 'application/json',
+                   "Content-Type": "application/json",
+                },
+                // Objet JSON => STRING
+                body: JSON.stringify({
+                   contact:{
+                       firstName: firstName.value,
+                       lastName: lastName.value,
+                       address: address.value,
+                       city: city.value,
+                       email: email.value
+                       }, 
+                       products:productBuy 
+                   })  
+               })
+               // identifie la réponse du serveur API
+               .then((response) => {
+                   // mettre la reponse en 200 - accepter/true
+                   if(response.ok){ ;
+                      return response.json()
+                   }
+                   else{
+                       console.log(response);
+                      alert("Une Erreur c'est produite lors de la creation...");
+                   }     
+               })
 
-                  .then(responseAPI => { // Que faire avec cette réponse ? orderID
-                    console.log("respondeAPI : "+responseAPI.orderId);
-                    localStorage.clear();                  
-                   location.href = `../html/confirmation.html?orderId=${responseAPI.orderId}`;
-                
-                    })
-                    .catch((error) => {
-                        alert (error.message);
-                    });
+             .then(responseAPI => { // Que faire avec cette réponse ? orderID
+               console.log("respondeAPI : "+responseAPI.orderId);
+               localStorage.clear();                  
+              location.href = `../html/confirmation.html?orderId=${responseAPI.orderId}`;
+           
+               })
+               .catch((error) => {
+                   alert (error.message);
+               });        
+            
+         }else {
+            alert("Tous les champs d'informations doivent être correctement remplis");
                  
                }        
          }) ; 
@@ -191,19 +222,6 @@ function changeQuantity() {
         
 }}
 
-// CLEAR PANIER
-function clearCart(product){
-    localStorage.clear();
-
-    let cart = document.getElementById("cart__items");
-
-    cart.removeChild(product);
-
-    updateCart(product);
-
-    window.location(reload);
-  }
-
 // Action : Supprimer le produit depuis le panier
   function deleteProduct() {
     let btn_delete = document.querySelectorAll(".deleteItem"); // recupérer TOUS les btn "supprimer"
@@ -225,16 +243,6 @@ function clearCart(product){
     }
 }
 
-// validate e-mail
-function validateEmail(email){
-    let regex = /^[A-Za-z0-9_-]+@\w+\.[a-z]+$/;
-    console.log(regex.test(email));
-    return regex.test(email);
-  }
-
-
-// }if(!validateEmail(email.value)) {          
-//     emailErrorMsg.innerHTML = "veuillez renseigner votre adresse mail" ;
 
 
 
