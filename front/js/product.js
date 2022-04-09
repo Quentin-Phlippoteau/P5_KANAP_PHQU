@@ -75,11 +75,15 @@ fetch("http://localhost:3000/api/products/"+productId) // stock l'url + id de l'
 let productLocalStorage = JSON.parse(localStorage.getItem("product"));
 
 // selectionne les produits avec le meme id et color
-let newProduct = productLocalStorage.find(
-    (element) =>
-      element.productId === oneArticle._id &&
-      element.productColor === selectColor
-  );
+let newProduct = null;
+if (productLocalStorage != null) {
+     newProduct = productLocalStorage.find(
+        (element) =>
+          element.productId === oneArticle._id &&
+          element.productColor === selectColor
+      );
+}
+
 
   console.table(newProduct);
   console.log(productLocalStorage);
@@ -104,14 +108,7 @@ let newProduct = productLocalStorage.find(
                 localStorage.setItem("product", JSON.stringify(productLocalStorage));
                 alert(newProduct.productQuantity)
 
-            } else {
-                alert("rupture de stock")
-            };
-            
-            
-            
-            
-            if (productLocalStorage) { // Si le panier contient déjà au moins un produit different
+            }  else if (productLocalStorage) { // Si le panier contient déjà au moins un produit different
                 productLocalStorage.push(articleInCart);
                 localStorage.setItem("product", JSON.stringify(productLocalStorage));
                 console.table(productLocalStorage);

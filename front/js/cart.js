@@ -217,7 +217,8 @@ function changeQuantity() {
         //  met à jour la key "product' et converti OBJET => JSON
         localStorage.setItem("product", JSON.stringify(productLocalStorage));
         // rafraichi la page  
-        location.reload();     
+        updateCart(q);
+             
         })
         
 }}
