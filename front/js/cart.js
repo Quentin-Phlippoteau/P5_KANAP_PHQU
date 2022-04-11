@@ -4,10 +4,7 @@
 
  let productBuy = [] ; // creation tableau vide
  let sectionItems = document.getElementById("cart__items"); // definir le parent
- let arrayPrice = [];  // déclarer un tableau Price et quantity avant la boucle for a puis retourner les données nécessaires
- let arrayQuantity = [];
-
-
+ 
  for(let product in productLocalStorage) { // 1 product parmis tous les products
      
     let productArticle = document.createElement("article");
@@ -182,6 +179,9 @@ deleteProduct()
 
  //Met à jour le panier quand un produit vient à être supprimé ou quand l'utilisateur change la quantité d'un produit
  function updateCart(product){
+
+    let arrayPrice = [];
+    let arrayQuantity = [];
 
     arrayQuantity.push(parseInt(productLocalStorage[product].productQuantity));
     let totalQuantity = arrayQuantity.reduce(function(a,b){ // fonction addition toutes les quantités
