@@ -43,9 +43,8 @@ fetch("http://localhost:3000/api/products/" + productId) // stock l'url + id de 
 
         const colors = document.querySelector("#colors");
         const quantity = document.querySelector("#quantity");
-
-
         const btnAddToCart = document.querySelector("#addToCart"); // stocker le bouton dans une variable JS
+        
         btnAddToCart.addEventListener('click', (event) => {
             const selectColor = colors.value;
             // console.log(selectColor);
@@ -69,8 +68,7 @@ fetch("http://localhost:3000/api/products/" + productId) // stock l'url + id de 
                 };
                 console.table(articleInCart);
 
-
-                //************************ localStorage **********************************************
+                //localStorage
 
                 let productLocalStorage = JSON.parse(localStorage.getItem("product"));
 
@@ -115,15 +113,4 @@ fetch("http://localhost:3000/api/products/" + productId) // stock l'url + id de 
 
 
     });
-
-
-
-                    // Déclaration de la fonction popuConfirmation pour lien vers la page panier
-                    // const popupConfirmation = () => {
-                    //     if (window.confirm(`votre commande de ${selectQuantity} ${oneArticle.name} en couleur ${selectColor} est ajouté au panier. Appuyer sur OK pour consulter votre panier ou Annuler pour revenir à la page d'accueil`)) {
-                    //         window.location.href = "cart.html";
-                    //     } else {
-                    //         localStorage.clear();
-                    //         window.location.href = "index.html";
-                    //     }
-                    // };
+                  

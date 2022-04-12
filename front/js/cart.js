@@ -59,14 +59,13 @@
    let emailErrorMsg = document.querySelector("#emailErrorMsg");
 
 
- // METHODE POST // onglet network(reseau)
+ // Formulaire
 
  let order = document.getElementById("order");
  const regexName = /^(?=.{1,50}$)[a-z\u00C0-\u00FF]+(?:['-_.\s][a-z\u00C0-\u00FF]+)*$/i;
  const regexLocation = /^[a-zA-Z0-9\u00C0-\u00FF\s,. '-]{3,}$/;
  const regexEmail = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
 
- // confirmer la validation de chaque champs du formulaire 
 firstName.addEventListener("change",(Event) => {
     if (regexName.test(firstName.value) == true) {
         firstNameErrorMsg.innerHTML = " " ;
@@ -107,9 +106,30 @@ email.addEventListener("change",(Event) => {
     }    
 });
 
- // valider tous les champs du formulaire  + methode post
+ // methode POST
 
      order.addEventListener("click",(Event)=> {
+        Event.preventDefault();
+        let orderAPI = {
+            contact:{
+                firstName: firstName.value,
+                lastName: lastName.value,
+                address: address.value,
+                city: city.value,
+                email: email.value
+                }, 
+                products:productBuy 
+         }
+               
+         let post = {
+            method: 'POST',
+            body: JSON.stringify(orderAPI),
+            headers: {
+                'Accept': 'application/json', 
+                "Content-Type": "application/json" 
+            },
+        };
+
         if (    
             (regexName.test(firstName.value) == true) &
             (regexName.test(lastName.value) == true) &
@@ -117,25 +137,7 @@ email.addEventListener("change",(Event) => {
             (regexLocation.test(address.value) == true)&
             (regexEmail.test(email.value) == true)
           ) { 
-            fetch("http://localhost:3000/api/products/order/", { // URL/order (voir documentation parametres des API)
-                method: "POST",
-                headers: {
-                   'Accept': 'application/json',
-                   "Content-Type": "application/json",
-                },
-                // Objet JSON => STRING
-                body: JSON.stringify({
-                   contact:{
-                       firstName: firstName.value,
-                       lastName: lastName.value,
-                       address: address.value,
-                       city: city.value,
-                       email: email.value
-                       }, 
-                       products:productBuy 
-                   })  
-               })
-               // identifie la réponse du serveur API
+            fetch("http://localhost:3000/api/products/order", post)
                .then((response) => {
                    // mettre la reponse en 200 - accepter/true
                    if(response.ok){ ;
@@ -147,11 +149,10 @@ email.addEventListener("change",(Event) => {
                    }     
                })
 
-             .then(responseAPI => { // Que faire avec cette réponse ? orderID
+             .then(responseAPI => {
                console.log("respondeAPI : "+responseAPI.orderId);
                localStorage.clear();                  
-              location.href = `../html/confirmation.html?orderId=${responseAPI.orderId}`;
-           
+              document.location.href = `confirmation.html?orderId=${responseAPI.orderId}`;           
                })
                .catch((error) => {
                    alert (error.message);
@@ -166,13 +167,6 @@ email.addEventListener("change",(Event) => {
 
 changeQuantity()          
 deleteProduct()
-
-
-
-
-
-    
-    
 
 // ****************** TOUTES LES FONCTIONS ******************************
 

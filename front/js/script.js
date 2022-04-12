@@ -1,4 +1,3 @@
-
 // récupérer les données de l'API
 
 fetch("http://localhost:3000/api/products")
@@ -36,14 +35,6 @@ fetch("http://localhost:3000/api/products")
         newArticle.appendChild(articleDescription);
         articleDescription.classList.add("productDescription");
         articleDescription.innerHTML = resultatAPI[article].description;
-
-
-
-
-
-
-
-
 
     }
 })
